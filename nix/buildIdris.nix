@@ -1,8 +1,9 @@
 { stdenv, lib, idris2-version, idris2 }:
-{ src, projectName, idrisLibraries, ... }@attrs:
+{ src, projectName, idrisLibraries, includeSrc ? false,  ... }@attrs:
 
 let
   ipkgName = projectName + ".ipkg";
+  withSrc = if includeSrc then "-with-src" else "";
   idrName = "idris2-${idris2-version}";
   libSuffix = "lib/${idrName}";
   lib-dirs =
@@ -35,7 +36,7 @@ in rec {
     installPhase = ''
       mkdir -p $out/${libSuffix}
       export IDRIS2_PREFIX=$out/lib
-      idris2 --install ${ipkgName}
+      idris2 --install${withSrc} ${ipkgName}
     '';
   });
 }
